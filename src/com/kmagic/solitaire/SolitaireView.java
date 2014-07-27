@@ -519,6 +519,8 @@ public class SolitaireView extends View {
     switch (keyCode) {
     case KeyEvent.KEYCODE_DPAD_CENTER:
     case KeyEvent.KEYCODE_SEARCH:
+    case KeyEvent.KEYCODE_VOLUME_DOWN:
+    case KeyEvent.KEYCODE_VOLUME_UP:
       if (mViewMode == MODE_TEXT) {
         ChangeViewMode(MODE_NORMAL);
       } else if (mViewMode == MODE_NORMAL) {
@@ -532,6 +534,39 @@ public class SolitaireView extends View {
       }
     mRules.HandleEvents();
     return super.onKeyDown(keyCode, msg);
+  }
+
+  @Override
+  public boolean dispatchKeyEvent(KeyEvent event) {
+      //dirty hack to prevent volume button from actually changing volume
+      int action = event.getAction();
+      int keyCode = event.getKeyCode();
+      switch (keyCode) {
+          case KeyEvent.KEYCODE_VOLUME_UP:
+              if (action == KeyEvent.ACTION_DOWN) {
+                  if (mViewMode == MODE_TEXT) {
+                      ChangeViewMode(MODE_NORMAL);
+                  } else if (mViewMode == MODE_NORMAL) {
+                      mRules.EventAlert(Rules.EVENT_DEAL, mCardAnchor[0]);
+                      Refresh();
+                  }
+                  return true;
+              }
+              return true;
+          case KeyEvent.KEYCODE_VOLUME_DOWN:
+              if (action == KeyEvent.ACTION_DOWN) {
+                  if (mViewMode == MODE_TEXT) {
+                      ChangeViewMode(MODE_NORMAL);
+                  } else if (mViewMode == MODE_NORMAL) {
+                      mRules.EventAlert(Rules.EVENT_DEAL, mCardAnchor[0]);
+                      Refresh();
+                  }
+                  return true;
+              }
+              return true;
+          default:
+              return super.dispatchKeyEvent(event);
+      }
   }
 
   @Override
